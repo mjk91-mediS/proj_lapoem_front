@@ -1,40 +1,51 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import NavBar from './components/NavBar';
+import Navbar from './components/Navbar';
 import Main from './components/Main/Main';
+import Join from './components/Auth/Join';
+import Login from './components/Auth/Login';
 import Booklist from './components/BookList/Booklist';
 import Stella from './components/Stella/Stella';
 import Community from './components/Community/Community';
-import Community_detail from './components/Community/Community_detail';
 import NewForum from './components/Community/NewForum';
-import Join from './components/Auth/Join';
-import Login from './components/Auth/Login';
+import Community_detail from './components/Community/Community_detail';
+import ThreadOn from './components/ThreadOn/Threadon';
+import BookDetail from './components/BookList/BookDetail';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { initializeAuth } from './redux/features/auth/authSlice';
+import Mypage from './components/My/Mypage';
+import Threadon_post from './components/ThreadOn/Threadon_post';
+import BookReviews from './components/BookList/BookReviews';
 
 function App() {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(initializeAuth()); // 앱 로드 시 인증 상태 초기화
-  }, [dispatch]);
+    if (isLoggedIn) {
+      dispatch(initializeAuth());
+    }
+  }, [dispatch, isLoggedIn]);
 
   return (
     <BrowserRouter>
       <div className="App">
-        <NavBar />
+        <Navbar />
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/join" element={<Join />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/booklist" element={<Booklist />} />
-          <Route path="/chatstella" element={<Stella />} />
+          <Route path="/book_list" element={<Booklist />} />
+          <Route path="/book_list/:bookId" element={<BookDetail />} />
+          <Route path="/chatstella/" element={<Stella />} />
+          <Route path="/chatstella/:bookId" element={<Stella />} />
+          <Route path="/thread_on" element={<ThreadOn />} />
+          <Route path="/new_thread" element={<Threadon_post />} />
           <Route path="/community" element={<Community />} />
-          <Route path="/new-forum" element={<NewForum />} />
-          <Route path="/community_detail" element={<Community_detail />} />
-
-          <Route path="/community/:communityid" element={<Community_detail />} />
+          <Route path="/new_forum" element={<NewForum />} />
+          <Route path="/community/:postId" element={<Community_detail />} />
+          <Route path="/mypage" element={<Mypage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
