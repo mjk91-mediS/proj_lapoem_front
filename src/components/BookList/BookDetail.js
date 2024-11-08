@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GET_BOOK_DETAIL_API_URL } from '../../util/apiUrl';
 import BookReviews from './BookReviews';
-import BookCreateReview from './BookCreateReview';
 import { useSelector } from 'react-redux';
 import './BookDetail.css';
 
@@ -41,7 +40,10 @@ const BookDetail = () => {
   const handleStartChat = () => {
     if (memberNum) {
       // 전달되는 bookId와 memberNum을 확인하는 로그 추가
-      console.log('Navigating to Stella with bookId and memberNum:', { bookId, memberNum });
+      console.log('Navigating to Stella with bookId and memberNum:', {
+        bookId,
+        memberNum,
+      });
 
       // 사용자 번호와 책 번호를 URL에 포함하여 navigate
       navigate(`/chatstella/${bookId}?memberNum=${memberNum}`);
@@ -70,13 +72,22 @@ const BookDetail = () => {
               </div>
               <div className="book-detail-right">
                 <div className="book-detail-labels">
-                  {bookDetail.is_book_best && <span className="label-best-seller">베스트 셀러</span>}
-                  <span className="label-genre">{bookDetail.genre_tag_name}</span>
+                  {bookDetail.is_book_best && (
+                    <span className="label-best-seller">베스트 셀러</span>
+                  )}
+                  <span className="label-genre">
+                    {bookDetail.genre_tag_name}
+                  </span>
                 </div>
                 <h2 className="book-detail-title">{bookDetail.book_title}</h2>
                 <p className="book-detail-rating">
-                  <span className="rating-score">★ {bookDetail.average_rating}</span>
-                  <span className="review-count"> ({bookDetail.review_count})</span>
+                  <span className="rating-score">
+                    ★ {bookDetail.average_rating}
+                  </span>
+                  <span className="review-count">
+                    {' '}
+                    ({bookDetail.review_count})
+                  </span>
                 </p>
                 <p>
                   <strong>저자:</strong> {bookDetail.book_author}
@@ -85,7 +96,8 @@ const BookDetail = () => {
                   <strong>출판사:</strong> {bookDetail.book_publisher}
                 </p>
                 <p>
-                  <strong>출판일:</strong> {new Date(bookDetail.publish_date).toLocaleDateString()}
+                  <strong>출판일:</strong>{' '}
+                  {new Date(bookDetail.publish_date).toLocaleDateString()}
                 </p>
                 <p>
                   <strong>정가:</strong> {bookDetail.book_price} KRW
@@ -99,13 +111,11 @@ const BookDetail = () => {
               <h3>책 소개</h3>
               <p>{bookDetail.book_description}</p>
             </div>
-            <div className="review-preview-area">
+            <div className="book-review-area">
               <BookReviews />
             </div>
-            <div className="review-create-area">
-              <BookCreateReview />
-            </div>
-            <button onClick={handleStartChat}>채팅 시작</button> {/* 채팅 시작 버튼 */}
+            <button className='chatbot' onClick={handleStartChat} >채팅 시작</button>
+            {/* 채팅 시작 버튼 */}
           </>
         ) : (
           <p>No details available for this book.</p>

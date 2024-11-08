@@ -1,0 +1,129 @@
+.mypage_container {
+  min-height: 100vh;
+  padding: 180px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.my_page_top {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.my_page_title {
+  font-size: 38px;
+  line-height: 63px;
+  margin: 0;
+  font-family: var( --font-kr);
+  font-weight: bold;
+}
+
+.my_page_desc {
+  font-family: var( --font-kr);
+  font-size: var(--font-smallest);
+  color: var( --text-gray-dark);
+  margin-top: 10px;
+  justify-content: left;
+  margin-left: 10px; /* 타이틀과 간격을 조정 */
+  /* vertical-align: middle; */
+}
+
+.my_page_content {
+  font-family: var( --font-kr);
+  width: 100%;
+  max-width: 700px;
+  border-top: 1px solid var(--text-gray-light);
+  margin-top: 20px;
+  padding-top: 30px;
+}
+
+.my_page_content_title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.my_page_content_info > div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.my_page_content_info label {
+  flex: 1;
+  font-size: var(--font-normal1);
+  font-weight: 400;
+  color: var(--text-black);
+}
+
+.my_page_content_info input[type="text"],
+.my_page_content_info input[type="email"],
+.my_page_content_info input[type="date"] 
+.my_page_content_info input[type="checkbox"]
+{
+  flex: 2;
+  padding: 13px;
+  border: 1px solid var( --text-gray-light);
+  border-radius: 7px;
+  font-size: var( --font-small);
+  color: var(--text-black);
+}
+
+
+.marketing-container {
+  
+  margin-top: 20px; 
+}
+
+#marketingConsent {
+  margin-top: 2px;
+  margin-right: 10px;
+}
+
+
+.my_page_content_info input[disabled] {
+  background-color: var(--text-gray-bg);
+}
+
+
+
+.my_page_button {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  justify-content: space-between; /* 버튼 정렬 설정 */
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--text-gray-light);
+}
+
+.my_page_button button {
+  padding: 10px 20px;
+  font-size: var(--font-small);
+  font-weight: bold;
+  border-radius: 15px;
+  border: 1px solid var(--text-gray-medium);
+  cursor: pointer;
+  margin-left: 10px; /* 버튼 간격 조정 */
+}
+
+#deleteBtn {
+  background-color: var(--text-red); /* 빨간색으로 설정 */
+  border: 1px solid var(--text-red);
+  color: #fff;
+}
+
+#saveBtn {
+  background-color:var( --text-point) ;
+  color: #fff;
+}
+
+#cancelBtn {
+  background-color: #fff;
+  color: var(--text-black);
+}

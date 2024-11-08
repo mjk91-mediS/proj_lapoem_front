@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import SearchBar from "../Common/SearchBar";
 import {
@@ -11,6 +12,7 @@ import Pagination from "../PageNation";
 import BookCard from "../Bookcard";
 import "./Threadon_post.css";
 import small_star from "../../assets/images/small_star.png";
+import { Link } from "react-router-dom";
 
 const Threadon_post = () => {
   const [books, setBooks] = useState([]);
@@ -21,6 +23,11 @@ const Threadon_post = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const [selectedBook, setSelectedBook] = useState(null); // 선택된 도서 상태 추가
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [threadComment, setThreadComment] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const memberNum = useSelector((state) => state.auth.user?.memberNum); // Redux에서 memberNum 가져오기
 
   useEffect(() => {
     fetchBooks(currentPage, selectedCategory);
@@ -44,7 +51,6 @@ const Threadon_post = () => {
     }
   };
 
-  // 검색 결과를 처리하는 함수
   const handleSearch = (data) => {
     setBooks(data.data.slice(0, limit)); // 검색 결과 중 상위 5개만 도서 목록 업데이트
     setTotalBooks(data.totalBooks); // 총 도서 수 업데이트
@@ -52,7 +58,6 @@ const Threadon_post = () => {
     setSelectedCategory(""); // 검색 시 선택된 카테고리 초기화
   };
 
-  // 카테고리 선택 핸들러
   const handleCategoryChange = (category) => {
     setSelectedCategory(category); // 선택한 카테고리 ID로 상태 업데이트
     setCurrentPage(1); // 필터 변경 시 페이지를 1로 초기화
@@ -66,15 +71,64 @@ const Threadon_post = () => {
     }
   };
 
-  // 선택된 도서를 상태에 저장하는 함수
-  const handleBookSelect = (book) => {
-    console.log("Selected book:", book); // 클릭된 도서의 객체 데이터 확인
-    setSelectedBook(book);
+  const handleBookSelect = async (book) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8002/threads/exists/${book.book_id}`
+      );
+      if (response.data.exists) {
+        alert("이미 해당 책에 대한 스레드가 존재합니다.");
+        return; // 스레드가 존재할 경우 선택하지 않음
+      }
+      setSelectedBook(book);
+    } catch (error) {
+      console.error("Error checking thread existence:", error);
+    }
   };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    setErrorMessage("");
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setThreadComment("");
+    setErrorMessage("");
+  };
+
+  const handlePostThread = async () => {
+    if (!threadComment.trim()) {
+      setErrorMessage("첫 댓글을 입력하지 않으면 스레드를 생성할 수 없습니다.");
+      return;
+    }
+
+    const requestData = {
+      book_id: selectedBook.book_id,
+      member_num: memberNum,
+      thread_content: threadComment,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8002/threads",
+        requestData
+      );
+      setThreadComment("");
+      setSelectedBook(null);
+      closeModal();
+    } catch (error) {
+      console.error("Error creating thread:", error);
+      setErrorMessage("스레드 생성 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 한 행에 표시할 아이템 수와 빈 카드 수 계산
+  const itemsPerRow = 5;
+  const emptyCardCount = itemsPerRow - (books.length % itemsPerRow);
 
   return (
     <div className="thread-container">
-      {/* <h1 className="thread-header">THREAD ON</h1> */}
       <div className="new_thread_book_search">
         <div className="flex">
           <CategoryFilter onCategoryChange={handleCategoryChange} />
@@ -83,9 +137,11 @@ const Threadon_post = () => {
             onSearch={handleSearch}
           />
         </div>
+        <Link to="/thread_on">
+          <button className="post-thread-button">To Thread List</button>
+        </Link>
       </div>
 
-      {/* 선택한 도서 정보 영역 */}
       <div className="selected-book-container">
         <div>
           {selectedBook ? (
@@ -96,7 +152,9 @@ const Threadon_post = () => {
                 alt="책 표지"
                 onClick={() => setSelectedBook(null)}
               />
-              <button className="post-thread-button">Post Thread</button>
+              <button className="post-thread-button" onClick={openModal}>
+                Post Thread
+              </button>
             </div>
           ) : (
             <div className="placeholder-image" />
@@ -139,6 +197,31 @@ const Threadon_post = () => {
         </div>
       </div>
 
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="modal-close" onClick={closeModal}>
+              ×
+            </button>
+            <h2>Start a New Thread</h2>
+            <p>스레드를 열어보세요</p>
+            <p>새로운 스레드를 시작하려면 첫 번째 댓글을 남겨주세요.</p>
+            <textarea
+              className="thread-comment-input"
+              placeholder="댓글을 입력하세요..."
+              value={threadComment}
+              onChange={(e) => setThreadComment(e.target.value)}
+              maxLength={300}
+            />
+            <p className="comment-count">{threadComment.length}/300</p>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            <button className="post-thread-button" onClick={handlePostThread}>
+              Post Thread
+            </button>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -147,8 +230,8 @@ const Threadon_post = () => {
             {books.map((book) => (
               <div
                 key={book.book_id}
-                onClick={() => handleBookSelect(book)} // 감싸는 div에 클릭 이벤트 추가
-                style={{ cursor: "pointer" }} // 포인터 커서 추가
+                onClick={() => handleBookSelect(book)}
+                style={{ cursor: "pointer" }}
               >
                 <BookCard
                   thumbnail={book.book_cover}
@@ -158,9 +241,20 @@ const Threadon_post = () => {
                   rating={book.average_rating}
                   reviewCount={book.review_count}
                   bookId={book.book_id}
-                  disableLink={true} // Link 비활성화
+                  disableLink={true}
                 />
               </div>
+            ))}
+            {/* 빈 카드 추가 */}
+            {Array.from({ length: emptyCardCount }).map((_, index) => (
+              <div
+                key={`empty-${index}`}
+                style={{
+                  width: "280px",
+                  aspectRatio: "3 / 4",
+                  visibility: "hidden",
+                }}
+              />
             ))}
           </div>
           <div className="pagination">
