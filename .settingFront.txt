@@ -1,0 +1,88 @@
+public/
+src/
+├── assets/
+├── components/
+│   ├── Auth/
+│   │   ├── Join.js
+│   │   ├── Login.css
+│   │   └── Login.js
+│   ├── Booklist/
+│   │   ├── BookCreateReview.js
+│   │   ├── BookDetail.css
+│   │   ├── BookDetail.js
+│   │   ├── BookDetails.css
+│   │   ├── BookDetails.js
+│   │   ├── BookList.css
+│   │   ├── BookList.js
+│   │   ├── BookReviews.css
+│   │   └── BookReviews.js
+│   ├── Common/
+│   │   ├── CategoryFilter.js
+│   │   ├── Common.css
+│   │   └── SearchBar.js
+│   ├── Community/
+│   │   ├── Community_detail.css
+│   │   ├── Community_detail.js
+│   │   ├── Community.css
+│   │   ├── Community.js
+│   │   ├── NewForums.js
+│   │   └── NewForums.css
+│   ├── Main/
+│   │   ├── SlideImage/
+│   │   │   ├── Bestseller.js
+│   │   │   ├── booksection.css
+│   │   │   ├── Main.js
+│   │   │   ├── Releases.js
+│   │   │   ├── Slider.css
+│   │   │   └── Slider.js
+│   └── My/
+│       ├── MyPage.css
+│       └── MyPage.js
+├── Stella/
+│   ├── Stella.css
+│   ├── Stellas.js
+│   ├── ThreadOn/
+│   │   ├── BookCard.js
+│   │   ├── Footer.js
+│   │   ├── lists.js
+│   │   ├── navBar.css
+│   │   ├── NavBar.js
+│   │   ├── PageNation.js
+│   │   └── Pagination.js
+├── route/
+│   ├── features/
+│   │   └── store.js
+│   └── utils/
+│       └── API.js
+├── App.js
+├── index.js
+├── root.css
+├── .gitignore
+├── dockerfile
+├── nginx.conf
+├── package-lock.json
+├── package.json
+├── README.md
+└── tailwind.config.js
+
+
+수정 제안
+1. Auth 폴더 내의 구조 개선:
+
+Login.css와 Join.js는 로그인 및 가입 관련 파일이므로, Auth 디렉토리를 Auth/Login, Auth/Register 등의 하위 디렉토리로 세분화하여 파일을 관리하면 좋습니다.
+
+2. 코드 공통화 및 재사용성:
+
+Common 디렉토리에서 CategoryFilter.js, SearchBar.js와 같은 공통 컴포넌트를 모아두는 것은 좋은 구조입니다. 이곳에 에러 메시지 컴포넌트나 로딩 스피너 컴포넌트를 추가하여 중복 코드를 최소화할 수 있습니다.
+
+3. 슬라이더와 주요 컴포넌트 구분:
+
+SlideImage와 Main 디렉토리의 기능이 겹칠 수 있으므로, 슬라이더 관련 코드는 Main 폴더에 통합하거나, Slider와 같은 독립된 폴더로 분리하는 것이 좋습니다.
+
+4. API 및 유틸리티 파일 정리:
+
+route 디렉토리 내 utils/API.js 파일은 API 호출을 담당합니다. 만약 API 호출이 많아질 경우, 폴더를 세분화하여 route/utils/api/auth.js, route/utils/api/books.js처럼 모듈별로 나누는 것을 고려해 볼 수 있습니다.
+
+5. 환경 변수 관리:
+
+백엔드 서버 URL, Firebase 설정 값, SMTP 정보 등 환경 변수는 .env 파일을 사용하여 관리하고, config.js 파일에서 한 번에 불러오도록 하는 것이 좋습니다.
